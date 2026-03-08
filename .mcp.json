@@ -1,0 +1,10 @@
+{
+  "boltr": {
+    "command": "node",
+    "args": ["${CLAUDE_PLUGIN_ROOT}/dist/bundle.js"],
+    "env": {
+      "BOLTR_EMAIL": "${BOLTR_EMAIL}",
+      "BOLTR_PASSWORD": "${BOLTR_PASSWORD}"
+    }
+  }
+}

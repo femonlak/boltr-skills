@@ -1,0 +1,12 @@
+{
+  "name": "boltr",
+  "version": "1.0.0",
+  "description": "Manage BOLTR Tasks via AI — 25 MCP tools for tasks, lists, goals, focus sessions, and sprints. Use when managing tasks, planning your day, or running focus sessions.",
+  "author": {
+    "name": "Felipe Monlak",
+    "url": "https://github.com/femonlak"
+  },
+  "repository": "https://github.com/femonlak/boltr-skills",
+  "license": "MIT",
+  "keywords": ["boltr", "tasks", "productivity", "mcp", "focus", "sprints", "goals"]
+}
