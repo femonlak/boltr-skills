@@ -4,6 +4,20 @@ Agent Skills and MCP server for [BOLTR Tasks](https://boltr.app) — manage task
 
 Built on the [Agent Skills](https://agentskills.io/specification) specification.
 
+## What is BOLTR?
+
+BOLTR is a structured to-do list app built around a 5-step productivity methodology:
+
+1. **Brain Dump** — Capture every idea and task as it comes, without filtering or organizing. Just get it out of your head.
+2. **Organize** — Sort your inbox into lists (Work/Personal) and assign execution dates. Give each task a home.
+3. **Line-up** — Pick the 1-3 tasks that truly matter today. Mark them as MITs (Most Important Tasks).
+4. **Take Action** — Enter focus mode. One task at a time, with timers to keep you locked in.
+5. **Repeat** — Review your progress, check your goals, and plan the next cycle.
+
+BOLTR keeps things simple on purpose: tasks, lists, goals, and focus sessions. No labels, no priorities 1-5, no Gantt charts. Just a clean system that helps you move from thinking to doing.
+
+This plugin gives AI agents full access to your BOLTR workspace — so you can manage tasks, plan your day, and run focus sessions through conversation.
+
 ## Installation
 
 ### Claude Code (recommended)
