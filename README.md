@@ -109,6 +109,13 @@ Download the `.plugin` file from [Releases](https://github.com/femonlak/boltr-sk
 | Skill | Description |
 | --- | --- |
 | [boltr](skills/boltr/SKILL.md) | BOLTR methodology, task management flags (MIT/Delay/Doing), focus sessions vs sprints, and 25 MCP tools reference |
+| [padronizar](skills/padronizar/SKILL.md) | Standardize task titles and context fields view by view, with user confirmation at each step |
+
+## Slash Commands
+
+| Command | Description |
+| --- | --- |
+| `/padronizar [view]` | Run the padronizar skill on a specific view (today, week, inbox, next, or list name) |
 
 ## MCP Tools Reference (25)
 
