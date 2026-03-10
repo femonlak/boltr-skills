@@ -73,8 +73,13 @@ Restart Claude Desktop after saving.
 Add as a custom MCP connector:
 
 1. Go to **Settings** → **Connectors** → **Add custom connector**
-2. **URL**: `https://hgkzszxzxedanegdbuvu.supabase.co/functions/v1/mcp`
-3. **Authorization**: `Bearer boltr_your-token-here`
+2. Paste the full URL with your token as query parameter:
+
+```
+https://hgkzszxzxedanegdbuvu.supabase.co/functions/v1/mcp?token=boltr_your-token-here
+```
+
+> **Note**: claude.ai custom connectors don't support custom headers, so the token is passed via URL query parameter instead.
 
 #### Any MCP Client
 
@@ -118,7 +123,7 @@ The MCP server runs as a **Supabase Edge Function** with stateless HTTP transpor
 
 - `POST /functions/v1/mcp` — JSON-RPC requests (initialize, tools/list, tools/call)
 - `GET /functions/v1/mcp` — Health check
-- Authentication via `Authorization: Bearer boltr_...` header
+- Authentication via `Authorization: Bearer boltr_...` header or `?token=boltr_...` URL query parameter
 - Each request is independent (stateless) — no session management needed
 
 This means it works everywhere: Claude Code, Claude Desktop, Claude AI (claude.ai), Co-Work, and any MCP-compatible client.
