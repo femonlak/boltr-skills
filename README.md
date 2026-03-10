@@ -18,26 +18,37 @@ BOLTR keeps things simple on purpose: tasks, lists, goals, and focus sessions. N
 
 This plugin gives AI agents full access to your BOLTR workspace — so you can manage tasks, plan your day, and run focus sessions through conversation.
 
-## Installation
+## Setup
 
-### Claude Code (recommended)
+### Step 1: Generate a Personal Access Token
+
+1. Go to [boltr.app](https://boltr.app) → **Settings** → **Integrations**
+2. In the **AI Assistants (MCP)** section, click **Generate Token**
+3. Copy the token (`boltr_...`) — it's shown only once
+
+### Step 2: Connect to your AI client
+
+Choose your client below.
+
+#### Claude Code (recommended)
+
+Install the plugin:
 
 ```
 /plugin marketplace add femonlak/boltr-skills
 /plugin install boltr@boltr-skills
 ```
 
-Configure your BOLTR credentials as environment variables:
+Set your token as an environment variable:
 
 ```bash
 # Add to your ~/.zshrc or ~/.bashrc:
-export BOLTR_EMAIL="your-email@example.com"
-export BOLTR_PASSWORD="your-password"
+export BOLTR_MCP_TOKEN="boltr_your-token-here"
 ```
 
-After restarting your terminal, the MCP server will auto-start when the plugin is enabled.
+Restart your terminal. The remote MCP server connects automatically when the plugin is enabled.
 
-### Claude Desktop / Co-Work
+#### Claude Desktop
 
 Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows):
 
@@ -45,11 +56,10 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
 {
   "mcpServers": {
     "boltr": {
-      "command": "node",
-      "args": ["/path/to/boltr-skills/dist/bundle.js"],
-      "env": {
-        "BOLTR_EMAIL": "your-email@example.com",
-        "BOLTR_PASSWORD": "your-password"
+      "type": "url",
+      "url": "https://hgkzszxzxedanegdbuvu.supabase.co/functions/v1/mcp",
+      "headers": {
+        "Authorization": "Bearer boltr_your-token-here"
       }
     }
   }
@@ -58,19 +68,23 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
 
 Restart Claude Desktop after saving.
 
-### Claude AI (claude.ai)
+#### Claude AI (claude.ai) / Co-Work
 
-MCP servers configured in Claude Desktop are automatically available in claude.ai when connected.
+Add as a custom MCP connector:
 
-### Manual (any MCP client)
+1. Go to **Settings** → **Connectors** → **Add custom connector**
+2. **URL**: `https://hgkzszxzxedanegdbuvu.supabase.co/functions/v1/mcp`
+3. **Authorization**: `Bearer boltr_your-token-here`
 
-Clone this repo and point your MCP client to `dist/bundle.js`:
+#### Any MCP Client
 
-```bash
-git clone https://github.com/femonlak/boltr-skills.git
-```
+Point your client to the remote server:
 
-The bundle is a single self-contained file — no `npm install` needed.
+- **URL**: `https://hgkzszxzxedanegdbuvu.supabase.co/functions/v1/mcp`
+- **Transport**: HTTP (Streamable HTTP / JSON-RPC)
+- **Auth**: `Authorization: Bearer boltr_your-token-here`
+
+No local installation required — the MCP server runs as a hosted Supabase Edge Function.
 
 ## Skills
 
@@ -90,30 +104,32 @@ The bundle is a single self-contained file — no `npm install` needed.
 | Focus & Sprints | 3 | Focus session + Sprint CRUD + Timer |
 | Dashboard | 1 | Full state snapshot |
 
-## Environment Variables
+## Authentication
 
 | Variable | Required | Description |
 | --- | --- | --- |
-| `BOLTR_EMAIL` | Yes | Your BOLTR account email |
-| `BOLTR_PASSWORD` | Yes | Your BOLTR account password |
+| `BOLTR_MCP_TOKEN` | Yes | Personal Access Token generated in boltr.app |
 
-Authentication works as follows:
-1. First run: signs in with email/password
-2. Stores refresh token in `~/.boltr-mcp/session.json`
-3. Subsequent runs: restores session automatically
-4. If token expires: re-authenticates with credentials
+The token authenticates directly with the remote MCP server — no email/password needed. Tokens can be revoked anytime in **Settings → Integrations**.
 
-## Building from source
+## Architecture
 
-The `dist/bundle.js` is pre-built and ready to use. If you want to build from source:
+The MCP server runs as a **Supabase Edge Function** with stateless HTTP transport:
 
-```bash
-cd mcp-server
-npm install
-npm run bundle
-```
+- `POST /functions/v1/mcp` — JSON-RPC requests (initialize, tools/list, tools/call)
+- `GET /functions/v1/mcp` — Health check
+- Authentication via `Authorization: Bearer boltr_...` header
+- Each request is independent (stateless) — no session management needed
 
-This generates a single-file ESM bundle with all dependencies included.
+This means it works everywhere: Claude Code, Claude Desktop, Claude AI (claude.ai), Co-Work, and any MCP-compatible client.
+
+## Security
+
+- Tokens are hashed (SHA-256) before storage — the plain token is never persisted
+- Each token is scoped to a single user account
+- Tokens can be revoked instantly in boltr.app
+- The server enforces user-level data isolation on every request
+- Treat your token like a password
 
 ## License
 

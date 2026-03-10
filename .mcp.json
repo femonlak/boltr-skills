@@ -1,10 +1,9 @@
 {
   "boltr": {
-    "command": "node",
-    "args": ["${CLAUDE_PLUGIN_ROOT}/dist/bundle.js"],
-    "env": {
-      "BOLTR_EMAIL": "${BOLTR_EMAIL}",
-      "BOLTR_PASSWORD": "${BOLTR_PASSWORD}"
+    "type": "url",
+    "url": "https://hgkzszxzxedanegdbuvu.supabase.co/functions/v1/mcp",
+    "headers": {
+      "Authorization": "Bearer ${BOLTR_MCP_TOKEN}"
     }
   }
 }

@@ -8,8 +8,8 @@
     {
       "name": "boltr",
       "source": "./",
-      "description": "BOLTR Tasks plugin — 25 MCP tools + agent skill for task management via AI",
-      "version": "1.0.0"
+      "description": "BOLTR Tasks plugin — 25 MCP tools + agent skill for task management via AI (remote server)",
+      "version": "2.0.0"
     }
   ]
 }
