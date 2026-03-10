@@ -1,9 +1,0 @@
-{
-  "boltr": {
-    "type": "url",
-    "url": "https://hgkzszxzxedanegdbuvu.supabase.co/functions/v1/mcp",
-    "headers": {
-      "Authorization": "Bearer ${BOLTR_MCP_TOKEN}"
-    }
-  }
-}

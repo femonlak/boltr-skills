@@ -1,6 +1,6 @@
 # BOLTR Skills
 
-Agent Skills and MCP server for [BOLTR Tasks](https://boltr.app) — manage tasks, lists, goals, focus sessions, and sprints via AI.
+Agent skill for [BOLTR Tasks](https://boltr.app) — manage tasks, lists, goals, focus sessions, and sprints via AI.
 
 Built on the [Agent Skills](https://agentskills.io/specification) specification.
 
@@ -16,37 +16,41 @@ BOLTR is a structured to-do list app built around a 5-step productivity methodol
 
 BOLTR keeps things simple on purpose: tasks, lists, goals, and focus sessions. No labels, no priorities 1-5, no Gantt charts. Just a clean system that helps you move from thinking to doing.
 
-This plugin gives AI agents full access to your BOLTR workspace — so you can manage tasks, plan your day, and run focus sessions through conversation.
+## What this plugin provides
+
+This plugin contains only the **agent skill** (methodology guide, workflows, and tool reference). It does **not** include the MCP server connector.
+
+You need to set up the MCP server separately (see below), then install this plugin for the skill layer.
 
 ## Setup
 
-### Step 1: Generate a Personal Access Token
+### Step 1: Set up the MCP server (separate from this plugin)
+
+Generate a Personal Access Token:
 
 1. Go to [boltr.app](https://boltr.app) → **Settings** → **Integrations**
 2. In the **AI Assistants (MCP)** section, click **Generate Token**
 3. Copy the token (`boltr_...`) — it's shown only once
 
-### Step 2: Connect to your AI client
+Then connect the MCP server in your AI client:
 
-Choose your client below.
+#### Claude Code
 
-#### Claude Code (recommended)
+Add to your MCP config:
 
-Install the plugin:
-
+```json
+{
+  "mcpServers": {
+    "boltr": {
+      "type": "http",
+      "url": "https://hgkzszxzxedanegdbuvu.supabase.co/functions/v1/mcp",
+      "headers": {
+        "Authorization": "Bearer boltr_your-token-here"
+      }
+    }
+  }
+}
 ```
-/plugin marketplace add femonlak/boltr-skills
-/plugin install boltr@boltr-skills
-```
-
-Set your token as an environment variable:
-
-```bash
-# Add to your ~/.zshrc or ~/.bashrc:
-export BOLTR_MCP_TOKEN="boltr_your-token-here"
-```
-
-Restart your terminal. The remote MCP server connects automatically when the plugin is enabled.
 
 #### Claude Desktop
 
@@ -68,12 +72,12 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
 
 Restart Claude Desktop after saving.
 
-#### Claude AI (claude.ai) / Co-Work
+#### Claude AI (claude.ai) / Cowork
 
 Add as a custom MCP connector:
 
 1. Go to **Settings** → **Connectors** → **Add custom connector**
-2. Paste the full URL with your token as query parameter:
+2. Paste the URL with your token as query parameter:
 
 ```
 https://hgkzszxzxedanegdbuvu.supabase.co/functions/v1/mcp?token=boltr_your-token-here
@@ -83,13 +87,22 @@ https://hgkzszxzxedanegdbuvu.supabase.co/functions/v1/mcp?token=boltr_your-token
 
 #### Any MCP Client
 
-Point your client to the remote server:
-
 - **URL**: `https://hgkzszxzxedanegdbuvu.supabase.co/functions/v1/mcp`
 - **Transport**: HTTP (Streamable HTTP / JSON-RPC)
 - **Auth**: `Authorization: Bearer boltr_your-token-here`
 
-No local installation required — the MCP server runs as a hosted Supabase Edge Function.
+### Step 2: Install the skill plugin
+
+#### Claude Code
+
+```
+/plugin marketplace add femonlak/boltr-skills
+/plugin install boltr@boltr-skills
+```
+
+#### Claude Desktop / Cowork
+
+Download the `.plugin` file from [Releases](https://github.com/femonlak/boltr-skills/releases) and install it.
 
 ## Skills
 
@@ -97,7 +110,9 @@ No local installation required — the MCP server runs as a hosted Supabase Edge
 | --- | --- |
 | [boltr](skills/boltr/SKILL.md) | BOLTR methodology, task management flags (MIT/Delay/Doing), focus sessions vs sprints, and 25 MCP tools reference |
 
-## MCP Tools (25)
+## MCP Tools Reference (25)
+
+The skill references these 25 tools provided by the MCP server:
 
 | Module | Tools | Description |
 | --- | --- | --- |
@@ -108,25 +123,6 @@ No local installation required — the MCP server runs as a hosted Supabase Edge
 | Recurrence | 2 | Create/remove recurring rules |
 | Focus & Sprints | 3 | Focus session + Sprint CRUD + Timer |
 | Dashboard | 1 | Full state snapshot |
-
-## Authentication
-
-| Variable | Required | Description |
-| --- | --- | --- |
-| `BOLTR_MCP_TOKEN` | Yes | Personal Access Token generated in boltr.app |
-
-The token authenticates directly with the remote MCP server — no email/password needed. Tokens can be revoked anytime in **Settings → Integrations**.
-
-## Architecture
-
-The MCP server runs as a **Supabase Edge Function** with stateless HTTP transport:
-
-- `POST /functions/v1/mcp` — JSON-RPC requests (initialize, tools/list, tools/call)
-- `GET /functions/v1/mcp` — Health check
-- Authentication via `Authorization: Bearer boltr_...` header or `?token=boltr_...` URL query parameter
-- Each request is independent (stateless) — no session management needed
-
-This means it works everywhere: Claude Code, Claude Desktop, Claude AI (claude.ai), Co-Work, and any MCP-compatible client.
 
 ## Security
 
