@@ -27,6 +27,35 @@ Tasks automatically appear in views based on these rules:
 - **Lists**: Has list_id (filter by specific list)
 - **Logbook**: completed = true
 
+## Task Context (Structured Briefing)
+
+Every task has an optional **context** field — a rich text area with a pre-filled template that structures the "briefing" of the task:
+
+| Section | Purpose |
+|---------|---------|
+| 🎯 **WHY** | Why this task matters — the motivation |
+| 📋 **CONTEXT** | Background info, dependencies, related items |
+| ✅ **DONE WHEN** | Acceptance criteria — how to know it's complete |
+| ⚠️ **RESTRICTIONS** | Constraints, blockers, things to avoid |
+
+### When to set context via MCP
+- When creating tasks that require clarity (not for quick captures)
+- When the user provides detailed instructions about a task
+- When delegating or planning — context prevents rework
+- The field is HTML. Use `<p>` tags for structure
+
+### Example
+```
+boltr_create_task title="Prepare Q1 report" context="<p>🎯 WHY: Board meeting next Friday needs Q1 numbers</p><p>📋 CONTEXT: Data is in the finance dashboard, talk to Sarah for marketing numbers</p><p>✅ DONE WHEN: PDF report with revenue, costs, and projections shared with board</p><p>⚠️ RESTRICTIONS: Numbers are confidential until board approves</p>"
+```
+
+### Updating context
+```
+boltr_update_task task_id=X context="<p>🎯 WHY: ...</p><p>📋 CONTEXT: ...</p><p>✅ DONE WHEN: ...</p><p>⚠️ RESTRICTIONS: ...</p>"
+```
+
+Set `context=null` to clear it.
+
 ## Task Management Flags (CRITICAL)
 
 ### MIT (Most Important Task)
@@ -75,8 +104,8 @@ Tasks automatically appear in views based on these rules:
 |------|-------------|
 | `boltr_list_tasks` | List tasks by view (inbox/today/week/next/logbook) or list_id |
 | `boltr_get_task` | Get task details with subtasks and recurrence |
-| `boltr_create_task` | Create task (title required, max 50 chars) |
-| `boltr_update_task` | Update title, list, date, notes |
+| `boltr_create_task` | Create task (title required, max 50 chars, optional context) |
+| `boltr_update_task` | Update title, list, date, notes, context |
 | `boltr_complete_task` | Complete/uncomplete (handles scoring + recurrence) |
 | `boltr_delete_task` | Delete task (option to remove recurrence) |
 | `boltr_toggle_task_flags` | Toggle MIT, Delayed, or Doing |
@@ -141,6 +170,12 @@ User says: "Add task: buy groceries for Saturday"
 → boltr_create_task title="Buy groceries" execution_date="2026-03-14"
 ```
 
+### Detailed Task with Context
+```
+User says: "I need to prepare a proposal for the new client. They want pricing by Friday. Keep it under 10 pages."
+→ boltr_create_task title="Prepare client proposal" execution_date="2026-03-14" context="<p>🎯 WHY: New client requested pricing proposal</p><p>📋 CONTEXT: Client meeting was last Tuesday, they need pricing options</p><p>✅ DONE WHEN: Proposal sent to client with pricing tiers</p><p>⚠️ RESTRICTIONS: Max 10 pages, deadline Friday</p>"
+```
+
 ### Focus Session
 ```
 1. boltr_toggle_task_flags task_id=X flag='doing' value=true
@@ -175,7 +210,8 @@ User: "Remind me to review reports every Monday"
 - Areas: 'Work' or 'Personal' (exact casing)
 - Version locking: handled internally by MCP tools
 - Silent errors: tools return error messages, never crash
-- Recurring tasks: completing generates next occurrence automatically
+- Recurring tasks: completing generates next occurrence automatically (context is inherited)
+- Context field: optional structured HTML, use for tasks that need clarity (not quick captures)
 - Focus timer conflict: always check dashboard before starting a timer
 
 ## Goal Types
@@ -189,7 +225,8 @@ User: "Remind me to review reports every Monday"
 ## Communication Style
 
 - Always be proactive: suggest MITs, offer to create sprints, remind about goals
-- When user dumps ideas, use Brain Dump → create tasks in inbox
+- When user dumps ideas, use Brain Dump → create tasks in inbox (no context needed)
+- When user gives detailed instructions, capture the WHY/CONTEXT/DONE WHEN/RESTRICTIONS in the context field
 - When asked "what should I do?", check dashboard and suggest based on MITs and today's tasks
 - When a task is completed, congratulate and suggest the next one
 - Track focus time and mention productivity insights when relevant

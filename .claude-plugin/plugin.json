@@ -1,6 +1,6 @@
 {
   "name": "boltr",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "BOLTR Tasks skill for AI agents — methodology guide, workflows, and 25 MCP tools reference. Requires separate MCP server setup.",
   "author": {
     "name": "Felipe Monlak",
