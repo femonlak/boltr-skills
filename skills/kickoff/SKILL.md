@@ -29,6 +29,40 @@ Antes de iniciar, carregar as tools do Boltr via `tool_search`:
 - `boltr_manage_sprint`
 - `boltr_complete_task`
 
+### Memoria persistente
+
+Usar a **Obsidian CLI** (`obsidian`) para ler e escrever o arquivo de memoria. Comandos:
+- Ler: `obsidian read path="Boltr/memory/kickoff-memory.md"`
+- Atualizar: usar a tool `Write` ou `Edit` no caminho completo do arquivo
+
+**Caminho completo:** `/Users/monlak/Library/CloudStorage/GoogleDrive-felipe@bullet.cash/My Drive/My Obsidian/Boltr/memory/kickoff-memory.md`
+
+No inicio de cada kickoff, ler o arquivo de memoria:
+- Este arquivo contem aprendizados acumulados de todos os kickoffs anteriores (preferencias, padroes de classificacao, pessoas, projetos, decisoes recorrentes)
+- Usar essas informacoes para tomar melhores decisoes durante o kickoff (classificacao de listas, estimativas, agrupamento de sprints, etc.)
+- **No final de cada kickoff (apos Fase 3 aplicada):** atualizar o mesmo arquivo com novos aprendizados da sessao. Nao criar arquivo novo por dia — tudo fica em um unico arquivo, organizado por topico.
+- Tambem salvar memorias relevantes no sistema de memoria do Claude Code (`~/.claude/projects/`) para acesso automatico entre conversas.
+
+Formato do arquivo de memoria:
+```markdown
+# Kickoff Memory
+
+## Pessoas
+[Quem faz o que, quem revisa o que, stakeholders recorrentes]
+
+## Projetos Ativos
+[Projetos em andamento, contexto relevante para classificacao]
+
+## Preferencias de Planning
+[Como o usuario gosta de organizar sprints, MITs, delays, etc.]
+
+## Padroes de Classificacao
+[Regras aprendidas sobre qual lista usar, quando padronizar, etc.]
+
+## Decisoes Recorrentes
+[Decisoes que se repetem e que nao precisam ser re-discutidas]
+```
+
 ## Fase 1: Inbox Processing
 
 ### Objetivo
@@ -123,6 +157,12 @@ Apresentar ao usuario ANTES de executar:
 - Estimativa total do dia
 
 Aguardar confirmacao, ajustar se necessario, e so entao aplicar.
+
+#### 3.6 Pos-aplicacao: Delay em tasks de sprints
+Apos criar sprints e adicionar tasks a elas, aplicar `boltr_toggle_task_flags` flag=delayed value=true em TODAS as tasks que foram adicionadas a sprints. Isso evita que elas poluam a lista principal do today — o usuario acessa essas tasks via sprint.
+
+#### 3.7 Atualizar memoria
+Apos tudo aplicado, atualizar o arquivo `/Users/monlak/Library/CloudStorage/GoogleDrive-felipe@bullet.cash/My Drive/My Obsidian/Boltr/memory/kickoff-memory.md` com novos aprendizados da sessao. Atualizar os topicos existentes (nao duplicar) e adicionar novos se necessario.
 
 ## Padronizacao
 
